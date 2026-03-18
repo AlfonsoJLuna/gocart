@@ -1,0 +1,19 @@
+{{define "css-flag"}}
+    <style>
+        .flag {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+            flex-shrink: 0;
+            image-rendering: auto;
+            margin-right: var(--space-2);
+        }
+    </style>
+{{end}}
+
+{{define "flag"}}
+    {{if .}}
+        <img class="flag" src="{{flagImgSrc .}}" alt="{{.}}">
+    {{end}}
+{{end}}

@@ -1,0 +1,52 @@
+{{define "css-theme-toggle"}}
+    <style>
+        .theme-toggle {
+            margin-top: auto;
+            padding-top: var(--space-3);
+            border-top: 1px solid var(--color-border);
+        }
+
+        .theme-toggle button {
+            background: none;
+            border: 1px solid var(--color-border);
+            color: var(--color-text-muted);
+            border-radius: var(--radius-small);
+            padding: var(--space-2) var(--space-3);
+            font-size: var(--text-s);
+            font-family: var(--font);
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.5s, color 0.5s;
+        }
+
+        .theme-toggle button:hover {
+            background: var(--color-bg-hover);
+            color: var(--color-text-base);
+        }
+    </style>
+{{end}}
+
+{{define "theme-toggle"}}
+    <div class="theme-toggle">
+        <button onclick="toggleTheme()" id="theme-btn"></button>
+    </div>
+{{end}}
+
+{{define "js-theme-toggle"}}
+    <script>
+        function applyTheme(theme) {
+            document.documentElement.setAttribute("data-theme", theme);
+            document.getElementById("theme-btn").textContent = theme === "dark" ? "Theme: Dark" : "Theme: Light";
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute("data-theme");
+            const next = current === "dark" ? "light" : "dark";
+            localStorage.setItem("gocart-theme", next);
+            applyTheme(next);
+        }
+
+        const saved = localStorage.getItem("gocart-theme") || "light";
+        applyTheme(saved);
+    </script>
+{{end}}

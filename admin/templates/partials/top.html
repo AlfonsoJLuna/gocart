@@ -1,0 +1,26 @@
+{{define "top"}}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>GoCart Admin</title>
+
+        {{ template "css-variables" .}}
+        {{ template "css-common" .}}
+
+        {{ template "css-flash" .}}
+        {{ template "css-form" .}}
+        {{ template "css-button" .}}
+        {{ template "css-header" .}}
+        {{ template "css-table" .}}
+        {{ template "css-badge" .}}
+        {{ template "css-flag" .}}
+        {{ template "css-sidebar" .}}
+        {{ template "css-theme-toggle" .}}
+    </head>
+    <body>
+        {{template "sidebar" .}}
+        <main>
+            <div class="container">
+{{end}}

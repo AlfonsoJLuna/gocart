@@ -1,0 +1,61 @@
+{{define "countries-edit"}}
+{{template "top" .}}
+
+<div class="header">
+    <h1>Edit Country</h1>
+    <div class="button-group">
+        <a href="/countries" class="button button-secondary">← Back</a>
+    </div>
+</div>
+
+{{template "flash-error" .Error}}
+{{template "flash-success" .Success}}
+
+
+<form class="form" method="POST" action="/countries/edit/{{.Country.ID}}">
+    <div class="form-field">
+        <label>ISO Code</label>
+        <input type="text" name="iso_code" value="{{.Country.ISOCode}}" readonly>
+    </div>
+    <div class="form-field">
+        <label>Name</label>
+        <input type="text" name="name" value="{{.Country.Name}}" required>
+    </div>
+    <div class="form-field">
+        <label>Name Alt</label>
+        <input type="text" name="name_alt" value="{{.Country.NameAlt}}">
+    </div>
+    <div class="form-field">
+        <label>Default Currency</label>
+        <select name="currency_iso_code">
+            {{range .Currencies}}
+            <option value="{{.ISOCode}}" {{if eq .ISOCode $.Country.CurrencyISOCode}}selected{{end}}>
+                {{.ISOCode}} — {{.Name}}
+            </option>
+            {{end}}
+        </select>
+    </div>
+    <div class="form-field">
+        <div class="form-checkbox">
+            <input type="checkbox" name="is_enabled" {{if .Country.IsEU}}checked{{end}} readonly>
+            <span>Member of the EU</span>
+        </div>
+    </div>
+    <div class="form-field">
+        <label>VAT Rate (%)</label>
+        <input type="number" name="vat_rate" value="{{.Country.VATRate}}" step="0.01" min="0" max="100">
+    </div>
+    <div class="form-field">
+        <div class="form-checkbox">
+            <input type="checkbox" name="is_enabled" {{if .Country.IsEnabled}}checked{{end}}>
+            <span>Enable this country</span>
+        </div>
+    </div>
+    <div class="button-group">
+        <button type="submit" class="button button-primary">Save</button>
+        <a href="/countries" class="button button-secondary">Cancel</a>
+    </div>
+</form>
+
+{{template "bottom" .}}
+{{end}}

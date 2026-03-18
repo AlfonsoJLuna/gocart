@@ -1,0 +1,219 @@
+[
+  {
+    "iso_code": "AUD",
+    "name": "Australian Dollar",
+    "name_alt": "Dólar Australiano",
+    "decimals": 2,
+    "fx_rate": 1.7865
+  },
+  {
+    "iso_code": "BRL",
+    "name": "Brazilian Real",
+    "name_alt": "Real Brasileño",
+    "decimals": 2,
+    "fx_rate": 6.3253
+  },
+  {
+    "iso_code": "BGN",
+    "name": "Bulgarian Lev",
+    "name_alt": "Lev Búlgaro",
+    "decimals": 2,
+    "fx_rate": 1.9558
+  },
+  {
+    "iso_code": "CAD",
+    "name": "Canadian Dollar",
+    "name_alt": "Dólar Canadiense",
+    "decimals": 2,
+    "fx_rate": 1.6031
+  },
+  {
+    "iso_code": "CNY",
+    "name": "Chinese Yuan (Renminbi)",
+    "name_alt": "Yuan Chino (Renminbi)",
+    "decimals": 2,
+    "fx_rate": 8.3155
+  },
+  {
+    "iso_code": "CZK",
+    "name": "Czech Koruna",
+    "name_alt": "Corona Checa",
+    "decimals": 2,
+    "fx_rate": 24.458
+  },
+  {
+    "iso_code": "DKK",
+    "name": "Danish Krone",
+    "name_alt": "Corona Danesa",
+    "decimals": 2,
+    "fx_rate": 7.4642
+  },
+  {
+    "iso_code": "EUR",
+    "name": "Euro",
+    "name_alt": "Euro",
+    "decimals": 2,
+    "fx_rate": 1
+  },
+  {
+    "iso_code": "HKD",
+    "name": "Hong Kong Dollar",
+    "name_alt": "Dólar de Hong Kong",
+    "decimals": 2,
+    "fx_rate": 9.0877
+  },
+  {
+    "iso_code": "HUF",
+    "name": "Hungarian Forint",
+    "name_alt": "Forinto Húngaro",
+    "decimals": 0,
+    "fx_rate": 396.9
+  },
+  {
+    "iso_code": "ISK",
+    "name": "Icelandic Krona",
+    "name_alt": "Corona Islandesa",
+    "decimals": 0,
+    "fx_rate": 143
+  },
+  {
+    "iso_code": "INR",
+    "name": "Indian Rupee",
+    "name_alt": "Rupia India",
+    "decimals": 2,
+    "fx_rate": 102.8035
+  },
+  {
+    "iso_code": "IDR",
+    "name": "Indonesian Rupiah",
+    "name_alt": "Rupia Indonesia",
+    "decimals": 2,
+    "fx_rate": 19207.37
+  },
+  {
+    "iso_code": "ILS",
+    "name": "Israeli New Shekel",
+    "name_alt": "Nuevo Séquel Israelí",
+    "decimals": 2,
+    "fx_rate": 3.8953
+  },
+  {
+    "iso_code": "JPY",
+    "name": "Japanese Yen",
+    "name_alt": "Yen Japonés",
+    "decimals": 0,
+    "fx_rate": 171.72
+  },
+  {
+    "iso_code": "MYR",
+    "name": "Malaysian Ringgit",
+    "name_alt": "Ringgit Malayo",
+    "decimals": 2,
+    "fx_rate": 4.9255
+  },
+  {
+    "iso_code": "MXN",
+    "name": "Mexican Peso",
+    "name_alt": "Peso Mexicano",
+    "decimals": 2,
+    "fx_rate": 21.7935
+  },
+  {
+    "iso_code": "NZD",
+    "name": "New Zealand Dollar",
+    "name_alt": "Dólar Neozelandés",
+    "decimals": 2,
+    "fx_rate": 1.9811
+  },
+  {
+    "iso_code": "NOK",
+    "name": "Norwegian Krone",
+    "name_alt": "Corona Noruega",
+    "decimals": 2,
+    "fx_rate": 11.7465
+  },
+  {
+    "iso_code": "PHP",
+    "name": "Philippine Peso",
+    "name_alt": "Peso Filipino",
+    "decimals": 2,
+    "fx_rate": 66.687
+  },
+  {
+    "iso_code": "PLN",
+    "name": "Polish Zloty",
+    "name_alt": "Zloty Polaco",
+    "decimals": 2,
+    "fx_rate": 4.2665
+  },
+  {
+    "iso_code": "GBP",
+    "name": "Pound Sterling",
+    "name_alt": "Libra Esterlina",
+    "decimals": 2,
+    "fx_rate": 0.8668
+  },
+  {
+    "iso_code": "RON",
+    "name": "Romanian Leu",
+    "name_alt": "Leu Rumano",
+    "decimals": 2,
+    "fx_rate": 5.0728
+  },
+  {
+    "iso_code": "SGD",
+    "name": "Singapore Dollar",
+    "name_alt": "Dólar de Singapur",
+    "decimals": 2,
+    "fx_rate": 1.4987
+  },
+  {
+    "iso_code": "ZAR",
+    "name": "South African Rand",
+    "name_alt": "Rand Sudafricano",
+    "decimals": 2,
+    "fx_rate": 20.6758
+  },
+  {
+    "iso_code": "KRW",
+    "name": "South Korean Won",
+    "name_alt": "Won Surcoreano",
+    "decimals": 0,
+    "fx_rate": 1622.26
+  },
+  {
+    "iso_code": "SEK",
+    "name": "Swedish Krona",
+    "name_alt": "Corona Sueca",
+    "decimals": 2,
+    "fx_rate": 11.055
+  },
+  {
+    "iso_code": "CHF",
+    "name": "Swiss Franc",
+    "name_alt": "Franco Suizo",
+    "decimals": 2,
+    "fx_rate": 0.9364
+  },
+  {
+    "iso_code": "THB",
+    "name": "Thai Baht",
+    "name_alt": "Baht Tailandés",
+    "decimals": 2,
+    "fx_rate": 37.76
+  },
+  {
+    "iso_code": "TRY",
+    "name": "Turkish Lira",
+    "name_alt": "Lira Turca",
+    "decimals": 2,
+    "fx_rate": 47.9536
+  },
+  {
+    "iso_code": "USD",
+    "name": "US Dollar",
+    "name_alt": "Dólar Estadounidense",
+    "decimals": 2,
+    "fx_rate": 1.1658
+  }
+]

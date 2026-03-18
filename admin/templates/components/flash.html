@@ -1,0 +1,46 @@
+{{define "css-flash"}}
+    <style>
+        .flash {
+            padding: var(--space-4);
+            border-radius: var(--radius-base);
+            font-size: var(--text-m);
+            margin-bottom: var(--space-5);
+        }
+
+        .flash-success {
+            background: var(--color-bg-green);
+            color: var(--color-text-green);
+            border: 1px solid var(--color-text-green);
+        }
+
+        .flash-error {
+            background: var(--color-bg-red);
+            color: var(--color-text-red);
+            border: 1px solid var(--color-text-red);
+        }
+
+        .flash-info {
+            background: var(--color-bg-blue);
+            color: var(--color-text-blue);
+            border: 1px solid var(--color-text-blue);
+        }
+    </style>
+{{end}}
+
+{{define "flash-success"}}
+    {{if .}}
+        <div class="flash flash-success">{{.}}</div>
+    {{end}}
+{{end}}
+
+{{define "flash-error"}}
+    {{if .}}
+        <div class="flash flash-error">{{.}}</div>
+    {{end}}
+{{end}}
+
+{{define "flash-info"}}
+    {{if .}}
+        <div class="flash flash-info">{{.}}</div>
+    {{end}}
+{{end}}
