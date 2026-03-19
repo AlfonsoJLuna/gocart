@@ -11,38 +11,40 @@
 {{template "flash-error" .Error}}
 {{template "flash-success" .Success}}
 
-<form class="form" method="POST" action="/currencies/edit/{{.Data.ID}}">
-    <div class="form-field">
-        <label>ISO Code</label>
-        <input type="text" name="iso_code" value="{{.Data.ISOCode}}" readonly>
-    </div>
-    <div class="form-field">
-        <label>Name</label>
-        <input type="text" name="name" value="{{.Data.Name}}" required>
-    </div>
-    <div class="form-field">
-        <label>Name Alt</label>
-        <input type="text" name="name_alt" value="{{.Data.NameAlt}}">
-    </div>
-    <div class="form-field">
-        <label>Decimals</label>
-        <input type="number" name="decimals" value="{{.Data.Decimals}}" readonly>
-    </div>
-    <div class="form-field">
-        <label>FX Rate</label>
-        <input type="number" name="fx_rate" value="{{printf "%.2f" .Data.FXRate}}" readonly>
-    </div>
-    <div class="form-field">
-        <div class="form-checkbox">
-            <input type="checkbox" name="is_enabled" {{if .Data.IsEnabled}}checked{{end}}>
-            <span>Enable this currency</span>
+<div class="card">
+    <form method="POST" action="/currencies/edit/{{.Data.ID}}">
+        <div class="form-field">
+            <label>ISO Code</label>
+            <input type="text" name="iso_code" value="{{.Data.ISOCode}}" readonly>
         </div>
-    </div>
-    <div class="button-group">
-        <button type="submit" class="button button-primary">Save</button>
-        <a href="/currencies" class="button button-secondary">Cancel</a>
-    </div>
-</form>
+        <div class="form-field">
+            <label>Name</label>
+            <input type="text" name="name" value="{{.Data.Name}}" required>
+        </div>
+        <div class="form-field">
+            <label>Name Alt</label>
+            <input type="text" name="name_alt" value="{{.Data.NameAlt}}">
+        </div>
+        <div class="form-field">
+            <label>Decimals</label>
+            <input type="number" name="decimals" value="{{.Data.Decimals}}" readonly>
+        </div>
+        <div class="form-field">
+            <label>FX Rate</label>
+            <input type="number" name="fx_rate" value="{{printf "%.2f" .Data.FXRate}}" readonly>
+        </div>
+        <div class="form-field">
+            <div class="form-checkbox">
+                <input type="checkbox" name="is_enabled" {{if .Data.IsEnabled}}checked{{end}}>
+                <span>Enable this currency</span>
+            </div>
+        </div>
+        <div class="button-group">
+            <button type="submit" class="button button-primary">Save</button>
+            <a href="/currencies" class="button button-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
 
 {{template "bottom" .}}
 {{end}}

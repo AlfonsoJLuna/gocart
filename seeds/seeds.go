@@ -47,14 +47,17 @@ func SeedCurrencies(db *bbolt.DB) error {
 
 func SeedCountries(db *bbolt.DB) error {
 	var countries []*models.Country
+
 	if err := json.Unmarshal(countriesJSON, &countries); err != nil {
 		return fmt.Errorf("parsing countries.json: %w", err)
 	}
 
 	existing, err := models.CountryListAll(db, 0, 0, false)
+
 	if err != nil && !errors.Is(err, models.ErrNotFound) {
 		return fmt.Errorf("listing existing countries: %w", err)
 	}
+	
 	for _, c := range existing {
 		if err := models.CountryDelete(db, c.ID); err != nil {
 			return fmt.Errorf("deleting country %q: %w", c.ISOCode, err)
@@ -63,6 +66,11 @@ func SeedCountries(db *bbolt.DB) error {
 
 	for _, c := range countries {
 		c.IsEnabled = true
+
+		for _, r := range c.Regions {
+            r.IsEnabled = true
+        }
+
 		if _, err := models.CountryCreate(db, c); err != nil {
 			return fmt.Errorf("creating country %q: %w", c.ISOCode, err)
 		}
