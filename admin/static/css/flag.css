@@ -1,0 +1,9 @@
+.flag {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    flex-shrink: 0;
+    image-rendering: auto;
+    margin-right: var(--space-2);
+}

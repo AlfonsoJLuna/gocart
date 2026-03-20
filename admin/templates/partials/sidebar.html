@@ -1,0 +1,17 @@
+{{define "sidebar"}}
+    <nav>
+        <h1>GoCart</h1>
+        <a href="/">Dashboard</a>
+        <span class="nav-label">Store</span>
+        <a href="/">Users</a>
+        <a href="/">Orders</a>
+        <a href="/">Products</a>
+        <span class="nav-label">Settings</span>
+        <a href="/">Environment</a>
+        <a href="/currencies">Currencies</a>
+        <a href="/countries">Countries</a>
+        <a href="/">About</a>
+        
+        {{template "theme-toggle" .}}
+    </nav>
+{{end}}

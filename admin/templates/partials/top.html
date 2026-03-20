@@ -2,23 +2,30 @@
     <!DOCTYPE html>
     <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>GoCart Admin</title>
 
-        {{ template "css-variables" .}}
-        {{ template "css-common" .}}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        {{ template "css-flash" .}}
-        {{ template "css-card" .}}
-        {{ template "css-form" .}}
-        {{ template "css-button" .}}
-        {{ template "css-header" .}}
-        {{ template "css-table" .}}
-        {{ template "css-badge" .}}
-        {{ template "css-flag" .}}
-        {{ template "css-sidebar" .}}
-        {{ template "css-theme-toggle" .}}
+		<script>
+        	document.documentElement.setAttribute("data-theme", localStorage.getItem("gocart-theme") || "light");
+    	</script>
+
+        <link rel="stylesheet" href="/static/css/variables.css">
+        <link rel="stylesheet" href="/static/css/common.css">
+
+		<link rel="stylesheet" href="/static/css/table.css">
+		<link rel="stylesheet" href="/static/css/badge.css">
+		<link rel="stylesheet" href="/static/css/form.css">
+		<link rel="stylesheet" href="/static/css/header.css">
+		<link rel="stylesheet" href="/static/css/card.css">
+		<link rel="stylesheet" href="/static/css/sidebar.css">
+		<link rel="stylesheet" href="/static/css/button.css">
+		<link rel="stylesheet" href="/static/css/flag.css">
+		<link rel="stylesheet" href="/static/css/flash.css">
+		<link rel="stylesheet" href="/static/css/theme-toggle.css">
+
+		<script defer src="/static/js/theme-toggle.js"></script>
     </head>
     <body>
         {{template "sidebar" .}}

@@ -11,6 +11,9 @@ import (
 //go:embed templates
 var templateFiles embed.FS
 
+//go:embed static
+var staticFiles embed.FS
+
 func flagImgSrc(iso_code string) string {
 	if len(iso_code) < 2 {
 		return ""
@@ -32,7 +35,6 @@ func InitTemplates() (*template.Template, error) {
     tmpl, err := template.New("").Funcs(funcMap).ParseFS(templateFiles,
         "templates/pages/*.html",
 		"templates/partials/*.html",
-		"templates/components/*.html",
     )
     if err != nil {
         return nil, fmt.Errorf("parsing admin templates: %w", err)

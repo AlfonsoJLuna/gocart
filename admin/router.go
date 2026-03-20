@@ -9,8 +9,12 @@ import (
     "gocart/config"
 )
 
+
+
 func Route(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http.Handler {
     mux := http.NewServeMux()
+
+    mux.Handle("GET /static/", http.FileServerFS(staticFiles))
 
     mux.HandleFunc("GET /",                                         dashboard(cfg, db, tmpl))
 
