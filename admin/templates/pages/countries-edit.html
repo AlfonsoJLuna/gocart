@@ -2,7 +2,7 @@
 {{template "top" .}}
 
 <div class="header">
-    <h1>Edit Country</h1>
+    <h1>Countries / {{.Country.Name}}</h1>
     <div class="button-group">
         <a href="/countries" class="button button-secondary">← Back</a>
     </div>
@@ -12,7 +12,7 @@
 {{template "flash-success" .Success}}
 
 <div class="card">
-    <form method="POST" action="/countries/edit/{{.Country.ID}}">
+    <form method="POST" action="/countries/{{.Country.ID}}">
         <div class="form-field">
             <label>ISO Code</label>
             <input type="text" name="iso_code" value="{{.Country.ISOCode}}" readonly>
@@ -37,7 +37,7 @@
         </div>
         <div class="form-field">
             <label>VAT Rate (%)</label>
-            <input type="number" name="vat_rate" value="{{.Country.VATRate}}" step="0.01" min="0" max="100">
+            <input type="number" name="vat_rate" value="{{.Country.VATRate}}" step="0.1" min="0" max="100">
         </div>
         <div class="form-field">
             <div class="form-checkbox">
@@ -62,7 +62,7 @@
     <div class="header">
         <h1>Regions</h1>
         <div class="button-group">
-            <a href="/countries/edit/{{.Country.ID}}/regions/new" class="button button-primary">New</a>
+            <a href="/countries/{{.Country.ID}}/region/new" class="button button-primary">New</a>
         </div>
     </div>
     {{if .Country.Regions}}
@@ -76,23 +76,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{range .Country.Regions}}
-                    <tr>
+                    {{range $i, $r := .Country.Regions}}
+                    <tr class="table-tr-clickable" onclick="window.location='/countries/{{$.Country.ID}}/region/{{$i}}'">
                         <td>
-                            {{.Name}}
-                            {{if .IsEU}}
+                            {{$r.Name}}
+                            {{if $r.IsEU}}
                                 <span class="badge badge-blue">EU</span>
                             {{end}}
                         </td>
                         <td>
-                            {{if .VATRate}}
-                                {{.VATRate}}
+                            {{if $r.VATRate}}
+                                {{$r.VATRate}}
                             {{else}}
                                 <span class="muted">—</span>
                             {{end}}
                         </td>
                         <td>
-                            {{if .IsEnabled}}
+                            {{if $r.IsEnabled}}
                                 <span class="badge badge-green">Yes</span>
                             {{else}}
                                 <span class="badge badge-red">No</span>
@@ -104,7 +104,7 @@
             </table>
         </div>
     {{else}}
-        <span>No regions.</span>
+        <span>There are no regions.</span>
     {{end}}
 
 </div>

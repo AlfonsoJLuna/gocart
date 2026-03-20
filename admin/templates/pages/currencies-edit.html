@@ -2,7 +2,7 @@
 {{template "top" .}}
 
 <div class="header">
-    <h1>Edit Currency</h1>
+    <h1>Currencies / {{.Data.Name}}</h1>
     <div class="button-group">
         <a href="/currencies" class="button button-secondary">← Back</a>
     </div>
@@ -12,7 +12,7 @@
 {{template "flash-success" .Success}}
 
 <div class="card">
-    <form method="POST" action="/currencies/edit/{{.Data.ID}}">
+    <form method="POST" action="/currencies/{{.Data.ID}}">
         <div class="form-field">
             <label>ISO Code</label>
             <input type="text" name="iso_code" value="{{.Data.ISOCode}}" readonly>

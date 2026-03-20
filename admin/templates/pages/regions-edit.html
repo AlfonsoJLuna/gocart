@@ -1,0 +1,54 @@
+{{define "regions-edit"}}
+{{template "top" .}}
+
+<div class="header">
+    <h1>Countries / {{.Country.Name}} / {{.Region.Name}}</h1>
+    <div class="button-group">
+        <a href="/countries/{{.Country.ID}}" class="button button-secondary">← Back</a>
+    </div>
+</div>
+
+{{template "flash-error" .Error}}
+
+<div class="card">
+    <form id="form-region" method="POST" action="/countries/{{.Country.ID}}/region/{{.Index}}">
+        <div class="form-field">
+            <label>Name</label>
+            <input type="text" name="name" value="{{.Region.Name}}" required>
+        </div>
+        <div class="form-field">
+            <label>Name Alt</label>
+            <input type="text" name="name_alt" value="{{.Region.NameAlt}}">
+        </div>
+        <div class="form-field">
+            <label>VAT Rate (%)</label>
+            <input type="number" name="vat_rate" value="{{.Region.VATRate}}" step="0.1" min="0" max="100">
+        </div>
+        <div class="form-field">
+            <div class="form-checkbox">
+                <input type="checkbox" id="is_eu" name="is_eu" {{if .Region.IsEU}}checked{{end}}>
+                <span>Member of the EU</span>
+            </div>
+        </div>
+        <div class="form-field">
+            <div class="form-checkbox">
+                <input type="checkbox" id="is_enabled" name="is_enabled" {{if .Region.IsEnabled}}checked{{end}}>
+                <span>Enable this region</span>
+            </div>
+        </div>
+    </form>
+    <div class="split">
+        <div class="button-group">
+            <button class="button button-primary" form="form-region" type="submit">Save</button>
+            <a class="button button-secondary" href="/countries/{{.Country.ID}}">Cancel</a>
+        </div>
+        <form method="POST" action="/countries/{{.Country.ID}}/region/{{.Index}}/delete">
+            <button class="button button-danger" type="submit" onclick="return confirm('Delete region {{.Region.Name}}?')">
+                Delete
+            </button>
+        </form>
+    </div>
+</div>
+
+{{template "bottom" .}}
+{{end}}
