@@ -1,6 +1,7 @@
 package admin
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -20,34 +21,43 @@ type regionEditData struct {
     Success string
 }
 
+func loadRegionsEdit(w http.ResponseWriter, db *bbolt.DB, r *http.Request) (regionEditData, uuid.UUID, error) {
+	var data regionEditData
+
+	id, err := uuid.Parse(r.PathValue("id"))
+	if err != nil {
+		http.Error(w, "invalid id", http.StatusBadRequest)
+		return data, uuid.Nil, err
+	}
+
+	data.Index, err = strconv.Atoi(r.PathValue("index"))
+	if err != nil {
+		http.Error(w, "invalid index", http.StatusBadRequest)
+		return data, uuid.Nil, err
+	}
+
+	data.Country, err = models.CountryReadByID(db, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return data, uuid.Nil, err
+	}
+
+	if data.Index < 0 || data.Index >= len(data.Country.Regions) {
+		http.Error(w, "region not found", http.StatusNotFound)
+		return data, uuid.Nil, fmt.Errorf("region not found")
+	}
+
+	data.Region = data.Country.Regions[data.Index]
+
+	return data, id, nil
+}
+
 func regionsEdit(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
-        var data regionEditData
-
-        id, err := uuid.Parse(r.PathValue("id"))
-        if err != nil {
-            http.Error(w, "invalid id", http.StatusBadRequest)
-            return
-        }
-
-        data.Index, err = strconv.Atoi(r.PathValue("index"))
-        if err != nil {
-            http.Error(w, "invalid index", http.StatusBadRequest)
-            return
-        }
-
-        data.Country, err = models.CountryReadByID(db, id)
-        if err != nil {
-            http.Error(w, err.Error(), http.StatusNotFound)
-            return
-        }
-
-		if data.Index < 0 || data.Index >= len(data.Country.Regions) {
-			http.Error(w, "region not found", http.StatusNotFound)
+		data, _, err := loadRegionsEdit(w, db, r)
+		if err != nil {
 			return
 		}
-
-        data.Region = data.Country.Regions[data.Index]
 
         renderPage(w, tmpl, "regions_edit", data)
     }
@@ -55,32 +65,10 @@ func regionsEdit(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http
 
 func regionsEditPost(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
-        var data regionEditData
-
-        id, err := uuid.Parse(r.PathValue("id"))
-        if err != nil {
-            http.Error(w, "invalid id", http.StatusBadRequest)
-            return
-        }
-
-        data.Index, err = strconv.Atoi(r.PathValue("index"))
-        if err != nil {
-            http.Error(w, "invalid index", http.StatusBadRequest)
-            return
-        }
-
-        data.Country, err = models.CountryReadByID(db, id)
-        if err != nil {
-            http.Error(w, err.Error(), http.StatusNotFound)
-            return
-        }
-
-		if data.Index < 0 || data.Index >= len(data.Country.Regions) {
-			http.Error(w, "region not found", http.StatusNotFound)
+		data, _, err := loadRegionsEdit(w, db, r)
+		if err != nil {
 			return
 		}
-
-        data.Region = data.Country.Regions[data.Index]
 
 		data.Region.Name      = r.FormValue("name")
 		data.Region.NameAlt   = r.FormValue("name_alt")
@@ -99,36 +87,18 @@ func regionsEditPost(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) 
 }
 
 func regionsDeletePost(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-        id, err := uuid.Parse(r.PathValue("id"))
-        if err != nil {
-            http.Error(w, "invalid id", http.StatusBadRequest)
-            return
-        }
+	return func(w http.ResponseWriter, r *http.Request) {
+		data, id, err := loadRegionsEdit(w, db, r)
+		if err != nil {
+			return
+		}
 
-        index, err := strconv.Atoi(r.PathValue("index"))
-        if err != nil {
-            http.Error(w, "invalid index", http.StatusBadRequest)
-            return
-        }
+		data.Country.Regions = append(data.Country.Regions[:data.Index], data.Country.Regions[data.Index+1:]...)
+		if err := models.CountryUpdate(db, data.Country); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
-        c, err := models.CountryReadByID(db, id)
-        if err != nil {
-            http.Error(w, err.Error(), http.StatusNotFound)
-            return
-        }
-
-        if index < 0 || index >= len(c.Regions) {
-            http.Error(w, "region not found", http.StatusNotFound)
-            return
-        }
-
-        c.Regions = append(c.Regions[:index], c.Regions[index+1:]...)
-        if err := models.CountryUpdate(db, c); err != nil {
-            http.Error(w, err.Error(), http.StatusInternalServerError)
-            return
-        }
-		
-        http.Redirect(w, r, "/countries/" + id.String(), http.StatusSeeOther)
-    }
+		http.Redirect(w, r, "/countries/"+id.String(), http.StatusSeeOther)
+	}
 }

@@ -17,21 +17,32 @@ type regionNewData struct {
     Error   string
 }
 
+func loadRegionsNew(w http.ResponseWriter, db *bbolt.DB, r *http.Request) (regionNewData, uuid.UUID, error) {
+	var data regionNewData
+
+	id, err := uuid.Parse(r.PathValue("id"))
+	if err != nil {
+		http.Error(w, "invalid id", http.StatusBadRequest)
+		return data, uuid.Nil, err
+	}
+
+	data.Country, err = models.CountryReadByID(db, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return data, uuid.Nil, err
+	}
+
+    data.Region = &models.Region{}
+
+	return data, id, nil
+}
+
 func regionsNew(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
-		var data regionNewData
-
-        id, err := uuid.Parse(r.PathValue("id"))
-        if err != nil {
-            http.Error(w, "invalid id", http.StatusBadRequest)
-            return
-        }
-
-        data.Country, err = models.CountryReadByID(db, id)
-        if err != nil {
-            http.Error(w, err.Error(), http.StatusNotFound)
-            return
-        }
+		data, _, err := loadRegionsNew(w, db, r)
+		if err != nil {
+			return
+		}
 
         renderPage(w, tmpl, "regions_new", data)
     }
@@ -39,19 +50,10 @@ func regionsNew(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http.
 
 func regionsNewPost(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
-		var data regionNewData
-
-        id, err := uuid.Parse(r.PathValue("id"))
-        if err != nil {
-            http.Error(w, "invalid id", http.StatusBadRequest)
-            return
-        }
-
-        data.Country, err = models.CountryReadByID(db, id)
-        if err != nil {
-            http.Error(w, err.Error(), http.StatusNotFound)
-            return
-        }
+		data, id, err := loadRegionsNew(w, db, r)
+		if err != nil {
+			return
+		}
 
 		data.Region = &models.Region{
 			Name:      r.FormValue("name"),

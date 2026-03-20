@@ -18,23 +18,32 @@ type currenciesEditData struct {
 	Success			string
 }
 
+func loadCurrenciesEdit(w http.ResponseWriter, db *bbolt.DB, r *http.Request) (currenciesEditData, uuid.UUID, error) {
+	var data currenciesEditData
+
+	id, err := uuid.Parse(r.PathValue("id"))
+	if err != nil {
+		http.Error(w, "invalid id", http.StatusBadRequest)
+		return data, uuid.Nil, err
+	}
+
+	data.Currency, err = models.CurrencyReadByID(db, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return data, uuid.Nil, err
+	}
+
+	data.OriginalName = data.Currency.Name
+
+	return data, id, nil
+}
+
 func currenciesEdit(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var data currenciesEditData
-
-		id, err := uuid.Parse(r.PathValue("id"))
+		data, _, err := loadCurrenciesEdit(w, db, r)
 		if err != nil {
-			http.Error(w, "invalid id", http.StatusBadRequest)
 			return
 		}
-
-		data.Currency, err = models.CurrencyReadByID(db, id)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusNotFound)
-			return
-		}
-
-		data.OriginalName = data.Currency.Name
 
 		renderPage(w, tmpl, "currencies_edit", data)
 	}
@@ -42,21 +51,10 @@ func currenciesEdit(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) h
 
 func currenciesEditPost(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var data currenciesEditData
-
-		id, err := uuid.Parse(r.PathValue("id"))
+		data, _, err := loadCurrenciesEdit(w, db, r)
 		if err != nil {
-			http.Error(w, "invalid id", http.StatusBadRequest)
 			return
 		}
-
-		data.Currency, err = models.CurrencyReadByID(db, id)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusNotFound)
-			return
-		}
-
-		data.OriginalName = data.Currency.Name
 
 		data.Currency.Name      = r.FormValue("name")
 		data.Currency.NameAlt   = r.FormValue("name_alt")

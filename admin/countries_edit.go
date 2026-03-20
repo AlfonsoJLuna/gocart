@@ -19,34 +19,43 @@ type countriesEditData struct {
 	Success    		string
 }
 
+func loadCountriesEdit(w http.ResponseWriter, db *bbolt.DB, r *http.Request) (countriesEditData, uuid.UUID, error) {
+	var data countriesEditData
+
+	id, err := uuid.Parse(r.PathValue("id"))
+	if err != nil {
+		http.Error(w, "invalid id", http.StatusBadRequest)
+		return data, uuid.Nil, err
+	}
+
+	data.Country, err = models.CountryReadByID(db, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return data, uuid.Nil, err
+	}
+
+	data.OriginalName = data.Country.Name
+
+	currencies, err := models.CurrencyListAll(db, 0, 0, false)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return data, uuid.Nil, err
+	}
+
+	for _, c := range currencies {
+		if c.IsEnabled {
+			data.Currencies = append(data.Currencies, c)
+		}
+	}
+
+	return data, id, nil
+}
+
 func countriesEdit(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var data countriesEditData
-
-		id, err := uuid.Parse(r.PathValue("id"))
+		data, _, err := loadCountriesEdit(w, db, r)
 		if err != nil {
-			http.Error(w, "invalid id", http.StatusBadRequest)
 			return
-		}
-
-		data.Country, err = models.CountryReadByID(db, id)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusNotFound)
-			return
-		}
-
-		data.OriginalName = data.Country.Name
-
-		currencies, err := models.CurrencyListAll(db, 0, 0, false)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		for _, c := range currencies {
-			if c.IsEnabled {
-				data.Currencies = append(data.Currencies, c)
-			}
 		}
 
 		renderPage(w, tmpl, "countries_edit", data)
@@ -55,32 +64,9 @@ func countriesEdit(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) ht
 
 func countriesEditPost(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var data countriesEditData
-
-		id, err := uuid.Parse(r.PathValue("id"))
+		data, _, err := loadCountriesEdit(w, db, r)
 		if err != nil {
-			http.Error(w, "invalid id", http.StatusBadRequest)
 			return
-		}
-
-		data.Country, err = models.CountryReadByID(db, id)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusNotFound)
-			return
-		}
-
-		data.OriginalName = data.Country.Name
-
-		currencies, err := models.CurrencyListAll(db, 0, 0, false)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		for _, c := range currencies {
-			if c.IsEnabled {
-				data.Currencies = append(data.Currencies, c)
-			}
 		}
 
 		data.Country.Name = r.FormValue("name")
