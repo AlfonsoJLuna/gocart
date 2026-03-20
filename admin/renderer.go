@@ -8,12 +8,6 @@ import (
 	"log"
 )
 
-type editData struct {
-    Data  any
-	Error string
-	Success string
-}
-
 //go:embed templates
 var templateFiles embed.FS
 
@@ -49,7 +43,7 @@ func InitTemplates() (*template.Template, error) {
     return tmpl, nil
 }
 
-func render(w http.ResponseWriter, tmpl *template.Template, page string, data any) {
+func renderPage(w http.ResponseWriter, tmpl *template.Template, page string, data any) {
 	if err := tmpl.ExecuteTemplate(w, page, data); err != nil {
 		http.Error(w, "render error: "+err.Error(), http.StatusInternalServerError)
 	}

@@ -1,17 +1,18 @@
-{{define "regions-new"}}
+{{define "regions_edit"}}
 {{template "top" .}}
 
 <div class="header">
-    <h1>Countries / {{.Country.Name}} / New Region</h1>
+    <h1>Countries / {{.Country.Name}} / {{.Region.Name}}</h1>
     <div class="button-group">
         <a href="/countries/{{.Country.ID}}" class="button button-secondary">← Back</a>
     </div>
 </div>
 
 {{template "flash-error" .Error}}
+{{template "flash-success" .Success}}
 
 <div class="card">
-    <form method="POST" action="/countries/{{.Country.ID}}/region/new">
+    <form id="form-region" method="POST" action="/countries/{{.Country.ID}}/region/{{.Index}}">
         <div class="form-field">
             <label>Name</label>
             <input type="text" name="name" value="{{.Region.Name}}" required>
@@ -36,11 +37,18 @@
                 <span>Enable this region</span>
             </div>
         </div>
-        <div class="button-group">
-            <button type="submit" class="button button-primary">Create</button>
-            <a href="/countries/{{.Country.ID}}" class="button button-secondary">Cancel</a>
-        </div>
     </form>
+    <div class="split">
+        <div class="button-group">
+            <button class="button button-primary" form="form-region" type="submit">Save</button>
+            <a class="button button-secondary" href="/countries/{{.Country.ID}}">Cancel</a>
+        </div>
+        <form method="POST" action="/countries/{{.Country.ID}}/region/{{.Index}}/delete">
+            <button class="button button-danger" type="submit" onclick="return confirm('Delete region {{.Region.Name}}?')">
+                Delete
+            </button>
+        </form>
+    </div>
 </div>
 
 {{template "bottom" .}}
