@@ -16,7 +16,14 @@ func Route(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http.Handl
 
     mux.Handle("GET /static/", http.FileServerFS(staticFiles))
 
-    mux.HandleFunc("GET /",                                         dashboard(cfg, db, tmpl))
+    mux.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
+        if r.URL.Path != "/" {
+            render404(w, tmpl)
+            return
+        }
+        
+        dashboard(cfg, db, tmpl)(w, r)
+    })
 
     mux.HandleFunc("GET  /currencies",                              currenciesList(cfg, db, tmpl))
     mux.HandleFunc("GET  /currencies/{id}",                         currenciesEdit(cfg, db, tmpl))

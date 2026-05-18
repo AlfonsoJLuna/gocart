@@ -45,6 +45,12 @@ func InitTemplates() (*template.Template, error) {
     return tmpl, nil
 }
 
+func render404(w http.ResponseWriter, tmpl *template.Template) {
+    w.WriteHeader(http.StatusNotFound)
+
+    renderPage(w, tmpl, "404", nil)
+}
+
 func renderPage(w http.ResponseWriter, tmpl *template.Template, page string, data any) {
 	if err := tmpl.ExecuteTemplate(w, page, data); err != nil {
 		http.Error(w, "render error: "+err.Error(), http.StatusInternalServerError)
