@@ -1,59 +1,71 @@
 package admin
-
+ 
 import (
+	"database/sql"
 	"html/template"
 	"net/http"
-
+ 
 	"github.com/google/uuid"
-	"go.etcd.io/bbolt"
 
 	"gocart/config"
 	"gocart/models"
+	"gocart/services"
 )
 
 type countriesEditData struct {
-	Country    		*models.Country
+	Country      	*models.Country
 	OriginalName	string
-	Currencies 		[]*models.Currency
-	Error      		string
-	Success    		string
+	CurrencyID		string
+	Currencies   	[]*models.Currency
+	Regions      	[]*models.Region
+	Error        	string
+	Success      	string
 }
 
-func loadCountriesEdit(w http.ResponseWriter, db *bbolt.DB, r *http.Request) (countriesEditData, uuid.UUID, error) {
+func loadCountriesEdit(w http.ResponseWriter, db *sql.DB, r *http.Request) (countriesEditData, error) {
 	var data countriesEditData
 
-	id, err := uuid.Parse(r.PathValue("id"))
+	countryID, err := uuid.Parse(r.PathValue("id"))
 	if err != nil {
 		http.Error(w, "invalid id", http.StatusBadRequest)
-		return data, uuid.Nil, err
+		return data, err
 	}
 
-	data.Country, err = models.CountryReadByID(db, id)
+	data.Country, err = services.CountryReadByID(db, countryID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
-		return data, uuid.Nil, err
+		return data, err
 	}
-
 	data.OriginalName = data.Country.Name
 
-	currencies, err := models.CurrencyListAll(db, 0, 0, false)
+	// Flatten CurrencyID for easy comparison in the template.
+	if data.Country.CurrencyID != nil {
+		data.CurrencyID = data.Country.CurrencyID.String()
+	}
+	
+	currencies, err := services.CurrencyListAll(db, 0, -1, false)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return data, uuid.Nil, err
+		return data, err
 	}
-
 	for _, c := range currencies {
 		if c.IsEnabled {
 			data.Currencies = append(data.Currencies, c)
 		}
 	}
 
-	return data, id, nil
+	data.Regions, err = services.RegionListByCountryID(db, countryID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return data, err
+	}
+
+	return data, nil
 }
 
-func countriesEdit(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http.HandlerFunc {
+func countriesEdit(cfg *config.Config, db *sql.DB, tmpl *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		data, _, err := loadCountriesEdit(w, db, r)
+		data, err := loadCountriesEdit(w, db, r)
 		if err != nil {
 			return
 		}
@@ -62,20 +74,27 @@ func countriesEdit(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) ht
 	}
 }
 
-func countriesEditPost(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http.HandlerFunc {
+func countriesEditPost(cfg *config.Config, db *sql.DB, tmpl *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		data, _, err := loadCountriesEdit(w, db, r)
+		data, err := loadCountriesEdit(w, db, r)
 		if err != nil {
 			return
 		}
 
-		data.Country.Name = r.FormValue("name")
-		data.Country.NameAlt = r.FormValue("name_alt")
-		data.Country.CurrencyISOCode = r.FormValue("currency_iso_code")
-		data.Country.VATRate = parseFloat(r.FormValue("vat_rate"))
-		data.Country.IsEnabled = r.FormValue("is_enabled") == "on"
+		currencyID, err := uuid.Parse(r.FormValue("currency_id"))
+		if err != nil {
+			http.Error(w, "invalid currency id", http.StatusBadRequest)
+			return
+		}
 
-		if err := models.CountryUpdate(db, data.Country); err != nil {
+		data.Country.Name       = r.FormValue("name")
+		data.Country.NameAlt    = r.FormValue("name_alt")
+		data.Country.CurrencyID = &currencyID
+		data.Country.VATRate    = parseFloat(r.FormValue("vat_rate"))
+		data.Country.IsEU       = r.FormValue("is_eu") == "on"
+		data.Country.IsEnabled  = r.FormValue("is_enabled") == "on"
+
+		if err := services.CountryUpdate(db, data.Country); err != nil {
 			data.Error = friendlyError(err)
 		} else {
 			data.OriginalName = data.Country.Name

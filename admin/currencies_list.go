@@ -3,16 +3,15 @@ package admin
 import (
 	"html/template"
 	"net/http"
-
-	"go.etcd.io/bbolt"
+	"database/sql"
 
 	"gocart/config"
-	"gocart/models"
+	"gocart/services"
 )
 
-func currenciesList(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http.HandlerFunc {
+func currenciesList(cfg *config.Config, db *sql.DB, tmpl *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		currencies, err := models.CurrencyListAll(db, 0, 0, false)
+		currencies, err := services.CurrencyListAll(db, 0, -1, false)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

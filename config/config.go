@@ -29,16 +29,16 @@ func ConfigLoad() (*Config, error) {
 	// Load .env file if present (ignore error, OS env vars are fine too)
 	godotenv.Load()
 
-	c := &Config{}
+	e := &Config{}
 	var err error
 
 	// Load strings
 	stringVars := map[string]*string{
-		"GOCART_DB_PATH":        &c.DBPath,
-		"GOCART_STORE_NAME":     &c.StoreName,
-		"GOCART_STORE_CURRENCY": &c.StoreCurrency,
-		"GOCART_STORE_COUNTRY":  &c.StoreCountry,
-		"GOCART_SECRET_JWT":     &c.JWTSecret,
+		"GOCART_DB_PATH":        &e.DBPath,
+		"GOCART_STORE_NAME":     &e.StoreName,
+		"GOCART_STORE_CURRENCY": &e.StoreCurrency,
+		"GOCART_STORE_COUNTRY":  &e.StoreCountry,
+		"GOCART_SECRET_JWT":     &e.JWTSecret,
 	}
 	for key, dest := range stringVars {
 		val := os.Getenv(key)
@@ -50,9 +50,9 @@ func ConfigLoad() (*Config, error) {
 
 	// Load bools
 	boolVars := map[string]*bool{
-		"GOCART_API_EN":   &c.APIEnabled,
-		"GOCART_ADMIN_EN": &c.AdminEnabled,
-		"GOCART_JSLIB_EN": &c.JSLibEnabled,
+		"GOCART_API_EN":   &e.APIEnabled,
+		"GOCART_ADMIN_EN": &e.AdminEnabled,
+		"GOCART_JSLIB_EN": &e.JSLibEnabled,
 	}
 	for key, dest := range boolVars {
 		val := os.Getenv(key)
@@ -67,9 +67,9 @@ func ConfigLoad() (*Config, error) {
 
 	// Load ints
 	intVars := map[string]*int{
-		"GOCART_API_PORT":   &c.APIPort,
-		"GOCART_ADMIN_PORT": &c.AdminPort,
-		"GOCART_JSLIB_PORT": &c.JSLibPort,
+		"GOCART_API_PORT":   &e.APIPort,
+		"GOCART_ADMIN_PORT": &e.AdminPort,
+		"GOCART_JSLIB_PORT": &e.JSLibPort,
 	}
 	for key, dest := range intVars {
 		val := os.Getenv(key)
@@ -84,5 +84,5 @@ func ConfigLoad() (*Config, error) {
 	}
 
 	log.Println("Environment loaded successfully.")
-	return c, nil
+	return e, nil
 }

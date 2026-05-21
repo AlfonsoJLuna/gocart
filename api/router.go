@@ -2,11 +2,12 @@ package api
 
 import (
 	"net/http"
-	"go.etcd.io/bbolt"
+	"database/sql"
+
 	"gocart/config"
 )
 
-func Route(cfg *config.Config, db *bbolt.DB) http.Handler {
+func Route(cfg *config.Config, db *sql.DB) http.Handler {
 	mux := http.NewServeMux()
 
 	return mux

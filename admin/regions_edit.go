@@ -1,60 +1,57 @@
 package admin
-
+ 
 import (
-	"fmt"
+	"database/sql"
 	"html/template"
 	"net/http"
-	"strconv"
-
+ 
 	"github.com/google/uuid"
-	"go.etcd.io/bbolt"
 
 	"gocart/config"
 	"gocart/models"
+	"gocart/services"
 )
 
 type regionEditData struct {
-    Country *models.Country
-    Region  *models.Region
-    Index   int
-    Error   string
-    Success string
+	Country	*models.Country
+	Region  *models.Region
+	Error   string
+	Success	string
 }
 
-func loadRegionsEdit(w http.ResponseWriter, db *bbolt.DB, r *http.Request) (regionEditData, uuid.UUID, error) {
+func loadRegionsEdit(w http.ResponseWriter, db *sql.DB, r *http.Request) (regionEditData, error) {
 	var data regionEditData
-
-	id, err := uuid.Parse(r.PathValue("id"))
+ 
+	countryID, err := uuid.Parse(r.PathValue("id"))
 	if err != nil {
-		http.Error(w, "invalid id", http.StatusBadRequest)
-		return data, uuid.Nil, err
+		http.Error(w, "invalid country id", http.StatusBadRequest)
+		return data, err
 	}
 
-	data.Index, err = strconv.Atoi(r.PathValue("index"))
+	regionID, err := uuid.Parse(r.PathValue("region_id"))
 	if err != nil {
-		http.Error(w, "invalid index", http.StatusBadRequest)
-		return data, uuid.Nil, err
+		http.Error(w, "invalid region id", http.StatusBadRequest)
+		return data, err
 	}
-
-	data.Country, err = models.CountryReadByID(db, id)
+ 
+	data.Country, err = services.CountryReadByID(db, countryID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
-		return data, uuid.Nil, err
+		return data, err
 	}
-
-	if data.Index < 0 || data.Index >= len(data.Country.Regions) {
-		http.Error(w, "region not found", http.StatusNotFound)
-		return data, uuid.Nil, fmt.Errorf("region not found")
+ 
+	data.Region, err = services.RegionReadByID(db, regionID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return data, err
 	}
-
-	data.Region = data.Country.Regions[data.Index]
-
-	return data, id, nil
+ 
+	return data, nil
 }
 
-func regionsEdit(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http.HandlerFunc {
+func regionsEdit(cfg *config.Config, db *sql.DB, tmpl *template.Template) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
-		data, _, err := loadRegionsEdit(w, db, r)
+		data, err := loadRegionsEdit(w, db, r)
 		if err != nil {
 			return
 		}
@@ -63,9 +60,9 @@ func regionsEdit(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http
     }
 }
 
-func regionsEditPost(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http.HandlerFunc {
+func regionsEditPost(cfg *config.Config, db *sql.DB, tmpl *template.Template) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
-		data, _, err := loadRegionsEdit(w, db, r)
+		data, err := loadRegionsEdit(w, db, r)
 		if err != nil {
 			return
 		}
@@ -76,7 +73,7 @@ func regionsEditPost(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) 
 		data.Region.VATRate   = parseFloat(r.FormValue("vat_rate"))
 		data.Region.IsEnabled = r.FormValue("is_enabled") == "on"
 
-		if err := models.CountryUpdate(db, data.Country); err != nil {
+		if err := services.RegionUpdate(db, data.Region); err != nil {
 			data.Error = friendlyError(err)
 		} else {
 			data.Success = "Region saved successfully."
@@ -86,19 +83,18 @@ func regionsEditPost(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) 
     }
 }
 
-func regionsDeletePost(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http.HandlerFunc {
+func regionsDeletePost(cfg *config.Config, db *sql.DB, tmpl *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		data, id, err := loadRegionsEdit(w, db, r)
+		data, err := loadRegionsEdit(w, db, r)
 		if err != nil {
 			return
 		}
 
-		data.Country.Regions = append(data.Country.Regions[:data.Index], data.Country.Regions[data.Index+1:]...)
-		if err := models.CountryUpdate(db, data.Country); err != nil {
+		if err := services.RegionDelete(db, data.Region.ID); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		http.Redirect(w, r, "/countries/"+id.String(), http.StatusSeeOther)
+		http.Redirect(w, r, "/countries/"+data.Country.ID.String(), http.StatusSeeOther)
 	}
 }

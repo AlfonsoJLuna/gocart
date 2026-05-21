@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"errors"
 
-	"gocart/models"
+	"gocart/services"
 )
 
 func parseFloat(s string) float64 {
@@ -13,13 +13,13 @@ func parseFloat(s string) float64 {
 }
 
 func friendlyError(err error) string {
-	if errors.Is(err, models.ErrAlreadyExists) {
+	if errors.Is(err, services.ErrAlreadyExists) {
 		return "One of the values you entered is already in use by another record."
 	}
-	if errors.Is(err, models.ErrNotFound) {
+	if errors.Is(err, services.ErrNotFound) {
 		return "Record not found."
 	}
-	if errors.Is(err, models.ErrBadInput) {
+	if errors.Is(err, services.ErrBadInput) {
 		return "Invalid input."
 	}
 	return "An unexpected error occurred."

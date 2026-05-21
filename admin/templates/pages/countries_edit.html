@@ -27,9 +27,9 @@
         </div>
         <div class="form-field">
             <label>Default Currency</label>
-            <select name="currency_iso_code">
+            <select name="currency_id">
                 {{range .Currencies}}
-                <option value="{{.ISOCode}}" {{if eq .ISOCode $.Country.CurrencyISOCode}}selected{{end}}>
+                <option value="{{.ID}}" {{if eq (printf "%s" .ID) $.CurrencyID}}selected{{end}}>
                     {{.ISOCode}} — {{.Name}}
                 </option>
                 {{end}}
@@ -41,7 +41,7 @@
         </div>
         <div class="form-field">
             <div class="form-checkbox">
-                <input type="checkbox" name="is_enabled" {{if .Country.IsEU}}checked{{end}} readonly>
+                <input type="checkbox" name="is_eu" {{if .Country.IsEU}}checked{{end}} readonly>
                 <span>Member of the EU</span>
             </div>
         </div>
@@ -65,7 +65,7 @@
             <a href="/countries/{{.Country.ID}}/region/new" class="button button-primary">New</a>
         </div>
     </div>
-    {{if .Country.Regions}}
+    {{if .Regions}}
         <div class="table-wrap">
             <table>
                 <thead>
@@ -76,23 +76,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{range $i, $r := .Country.Regions}}
-                    <tr class="table-tr-clickable" onclick="window.location='/countries/{{$.Country.ID}}/region/{{$i}}'">
+                    {{range .Regions}}
+                    <tr class="table-tr-clickable" onclick="window.location='/countries/{{$.Country.ID}}/region/{{.ID}}'">
                         <td>
-                            {{$r.Name}}
-                            {{if $r.IsEU}}
+                            {{.Name}}
+                            {{if .IsEU}}
                                 <span class="badge badge-blue">EU</span>
                             {{end}}
                         </td>
                         <td>
-                            {{if $r.VATRate}}
-                                {{$r.VATRate}}
+                            {{if .VATRate}}
+                                {{.VATRate}}
                             {{else}}
                                 <span class="muted">—</span>
                             {{end}}
                         </td>
                         <td>
-                            {{if $r.IsEnabled}}
+                            {{if .IsEnabled}}
                                 <span class="badge badge-green">Yes</span>
                             {{else}}
                                 <span class="badge badge-red">No</span>

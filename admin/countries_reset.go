@@ -3,14 +3,13 @@ package admin
 import (
 	"html/template"
     "net/http"
-
-	"go.etcd.io/bbolt"
+	"database/sql"
 	
 	"gocart/config"
 	"gocart/seeds"
 )
 
-func countriesResetPost(cfg *config.Config, db *bbolt.DB, tmpl *template.Template) http.HandlerFunc {
+func countriesResetPost(cfg *config.Config, db *sql.DB, tmpl *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := seeds.SeedCountries(db); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
