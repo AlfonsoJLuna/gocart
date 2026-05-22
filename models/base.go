@@ -6,8 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-const TimestampFormat = "2006-01-02T15:04:05.000Z"
-
 type Base struct {
 	ID        	uuid.UUID	`json:"id"`
 	CreatedAt	time.Time	`json:"created_at"`

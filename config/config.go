@@ -20,6 +20,7 @@ type Config struct {
 	StoreName     string
 	StoreCurrency string
 	StoreCountry  string
+	JWTIssuer     string
 	JWTSecret     string
 }
 
@@ -38,7 +39,8 @@ func ConfigLoad() (*Config, error) {
 		"GOCART_STORE_NAME":     &e.StoreName,
 		"GOCART_STORE_CURRENCY": &e.StoreCurrency,
 		"GOCART_STORE_COUNTRY":  &e.StoreCountry,
-		"GOCART_SECRET_JWT":     &e.JWTSecret,
+		"GOCART_JWT_SECRET":     &e.JWTSecret,
+		"GOCART_JWT_ISSUER":     &e.JWTIssuer,
 	}
 	for key, dest := range stringVars {
 		val := os.Getenv(key)
